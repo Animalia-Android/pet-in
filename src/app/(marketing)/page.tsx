@@ -7,7 +7,9 @@ export default function Home() {
   return (
     <main className="bg-[#5DC9A8] min-h-screen flex flex-col xl:flex-row items-center justify-center gap-10">
       <Image
-        src="https://bytegrad.com/course-assets/react-nextjs/petsoft-preview.png"
+        src={
+          'https://bytegrad.com/course-assets/react-nextjs/petsoft-preview.png'
+        }
         alt="Preview of PetSoft"
         width={519}
         height={472}
@@ -27,8 +29,8 @@ export default function Home() {
           <Button asChild>
             <Link href="/signup">Get Started</Link>
           </Button>
-          <Button variant="secondary">
-            <Link href="/login">Login</Link>Login
+          <Button asChild variant="secondary">
+            <Link href="/login">Login</Link>
           </Button>
         </div>
       </div>
