@@ -1,9 +1,26 @@
+'use client';
+
+import { usePetContext } from '@/lib/hooks';
+import Image from 'next/image';
+
 export default function PetList() {
+  const { pets } = usePetContext();
   return (
-    <ul className="bg-white border-b border-black/[0.08]">
-      <li>
-        <button>Benjamin</button>
-      </li>
+    <ul className="bg-white border-b border-light">
+      {pets.map((pet) => (
+        <li key={pet.id}>
+          <button className="flex items-center h-[70px] w-full cursor-pointer px-5 text-base gap-3 hover:bg-[#EFF1F2] focus:bg-[#EFF1F2] transition">
+            <Image
+              className="w-[45px] h-[45px] rounded-full object-cover"
+              src={pet.imageUrl}
+              alt="Pet Image"
+              width={45}
+              height={45}
+            />
+            <p className="font-semibold">{pet.name}</p>
+          </button>
+        </li>
+      ))}
     </ul>
   );
 }
