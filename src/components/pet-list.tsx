@@ -9,7 +9,9 @@ export default function PetList() {
     usePetContext();
   const { searchQuery } = useSearchContext();
 
-  const filteredPets = pets.filter((pets) => pets.name.includes(searchQuery));
+  const filteredPets = pets.filter((pets) =>
+    pets.name.toLowerCase().includes(searchQuery)
+  );
 
   return (
     <ul className="bg-white border-b border-light">
