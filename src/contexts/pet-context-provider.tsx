@@ -1,5 +1,6 @@
 'use client';
 
+import { addPet } from '@/actions/actions';
 import { Pet } from '@/lib/types';
 import { createContext, useState } from 'react';
 
@@ -21,11 +22,11 @@ type TPetContext = {
 export const PetContext = createContext<TPetContext | null>(null);
 
 export default function PetContextProvider({
-  data,
+  data: pets,
   children,
 }: PetContextProviderProps) {
   //state
-  const [pets, setPets] = useState(data);
+  // const [pets, setPets] = useState(data);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
 
   //derived state
@@ -33,12 +34,22 @@ export default function PetContextProvider({
   const numberOfPets = pets.length;
 
   //handlers
-  const handleAddPet = (newPet: Omit<Pet, 'id'>) => {
-    setPets((prev) => [...prev, { ...newPet, id: Date.now().toString() }]);
+  const handleAddPet = async (newPet: Omit<Pet, 'id'>) => {
+    // setPets((prev) => [...prev, { ...newPet, id: Date.now().toString() }]);
+
+    // standard way of communicating with the backend
+    // fetch('https://petsoft.com/api/pets', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(newPet),
+    // });
+    await addPet({ ...newPet, id: Date.now().toString() });
   };
 
   const handleCheckoutPet = (id: string) => {
-    setPets((prev) => prev.filter((pet) => pet.id !== id));
+    // setPets((prev) => prev.filter((pet) => pet.id !== id));
     setSelectedPetId(null);
   };
 
