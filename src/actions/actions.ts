@@ -26,3 +26,38 @@ export async function addPet(formData) {
   }
   revalidatePath('/app', 'layout'); // Revalidate the home page to reflect the new pet
 }
+
+export async function editPet(petId, formData) {
+  try {
+    await prisma.pet.update({
+      where: { id: petId },
+      data: {
+        name: formData.get('name'),
+        ownerName: formData.get('ownerName'),
+        imageUrl:
+          formData.get('imageUrl') ||
+          'https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png',
+        age: formData.get('age'),
+        notes: formData.get('notes'),
+      },
+    });
+  } catch (error) {
+    return {
+      message: 'Failed to update pet. Please try again.',
+    };
+  }
+  revalidatePath('/app', 'layout'); // Revalidate the home page to reflect the updated pet
+}
+
+export async function deletePet(petId) {
+  try {
+    await prisma.pet.delete({
+      where: { id: petId },
+    });
+  } catch (error) {
+    return {
+      message: 'Failed to delete pet. Please try again.',
+    };
+  }
+  revalidatePath('/app', 'layout'); // Revalidate the home page to reflect the deleted pet
+}

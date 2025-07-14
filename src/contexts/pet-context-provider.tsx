@@ -2,7 +2,8 @@
 
 import { addPet } from '@/actions/actions';
 import { Pet } from '@/lib/types';
-import { createContext, useState } from 'react';
+import { createContext, useOptimistic, useState } from 'react';
+import { toast } from 'sonner';
 
 type PetContextProviderProps = {
   data: Pet[];
@@ -17,21 +18,23 @@ type TPetContext = {
   handleChangeSelectedPetId: (id: string) => void;
   handleCheckoutPet: (id: string) => void;
   handleAddPet: (newPet: Omit<Pet, 'id'>) => void;
+  handleEditPet: (petId: string, newPet: Omit<Pet, 'id'>) => void;
 };
 
 export const PetContext = createContext<TPetContext | null>(null);
 
 export default function PetContextProvider({
-  data: pets,
+  data,
   children,
 }: PetContextProviderProps) {
   //state
   // const [pets, setPets] = useState(data);
+  const [optimisticPets, setOptimisticPets] = useOptimistic(data);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
 
   //derived state
-  const selectedPet = pets.find((pet) => pet.id === selectedPetId);
-  const numberOfPets = pets.length;
+  const selectedPet = optimisticPets.find((pet) => pet.id === selectedPetId);
+  const numberOfPets = optimisticPets.length;
 
   //handlers
   const handleAddPet = async (newPet: Omit<Pet, 'id'>) => {
@@ -45,7 +48,21 @@ export default function PetContextProvider({
     //   },
     //   body: JSON.stringify(newPet),
     // });
-    await addPet({ ...newPet, id: Date.now().toString() });
+    // await addPet({ ...newPet, id: Date.now().toString() });
+
+    const error = await addPet(formData);
+
+    if (error) {
+      console.error('Error adding pet:', error);
+      toast.warning(error.message || 'Failed to add pet. Please try again.');
+      return;
+    }
+  };
+
+  const handleEditPet = (petId: string, newPet: Omit<Pet, 'id'>) => {
+    setOptimisticPets((prev) =>
+      prev.map((pet) => (pet.id === petId ? { ...pet, ...newPet } : pet))
+    );
   };
 
   const handleCheckoutPet = (id: string) => {
@@ -67,6 +84,7 @@ export default function PetContextProvider({
         handleChangeSelectedPetId,
         handleCheckoutPet,
         handleAddPet,
+        handleEditPet,
       }}
     >
       {children}

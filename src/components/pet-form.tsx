@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import { addPet } from '@/actions/actions';
+import { addPet, editPet } from '@/actions/actions';
 import PetFormBtn from './pet-form-btn';
 import { toast } from 'sonner';
 
@@ -18,7 +18,7 @@ export default function PetForm({
   actionType,
   onFormSubmission,
 }: PetFormProps) {
-  const { selectedPet } = usePetContext();
+  const { selectedPet, handleAddPet, handleEditPet } = usePetContext();
 
   // Old way of handling form submission
   // This is commented out to avoid confusion with the new way using FormData
@@ -45,14 +45,22 @@ export default function PetForm({
     <form
       className="flex flex-col"
       action={async (formData) => {
-        const error = await addPet(formData);
-
-        if (error) {
-          console.error('Error adding pet:', error);
-          toast.warning(
-            error.message || 'Failed to add pet. Please try again.'
-          );
-          return;
+        if (actionType === 'add') {
+          // const error = await addPet(formData);
+          // if (error) {
+          //   console.error('Error adding pet:', error);
+          //   toast.warning(
+          //     error.message || 'Failed to add pet. Please try again.'
+          //   );
+          //   return;
+          // }
+          handleAddPet(formData);
+        } else if (actionType === 'edit') {
+          // const error = await editPet(selectedPet?.id, formData);
+          // if (error) {
+          //   toast.warning(error.message);
+          //   return;
+          // }
         }
         // If the action is successful, we can call the onFormSubmission callback
         // This will trigger a re-render or any other side effects needed
