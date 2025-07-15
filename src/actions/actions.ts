@@ -3,21 +3,22 @@ import prisma from '@/lib/db';
 import { sleep } from '@/lib/utils';
 import { revalidatePath } from 'next/cache';
 
-export async function addPet(formData) {
-  console.log('Adding pet:', formData);
+export async function addPet(pet: any) {
+  console.log('Adding pet:', pet);
   await sleep(2000);
 
   try {
     await prisma?.pet.create({
-      data: {
-        name: formData.get('name') as string,
-        ownerName: formData.get('ownerName') as string,
-        imageUrl:
-          formData.get('imageUrl') ||
-          ('https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png' as string),
-        age: parseInt(formData.get('age') as string),
-        notes: formData.get('notes') as string,
-      },
+      data: pet,
+      // data: {
+      //   name: formData.get('name') as string,
+      //   ownerName: formData.get('ownerName') as string,
+      //   imageUrl:
+      //     formData.get('imageUrl') ||
+      //     ('https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png' as string),
+      //   age: parseInt(formData.get('age') as string),
+      //   notes: formData.get('notes') as string,
+      // },
     });
   } catch (error) {
     return {
@@ -27,19 +28,20 @@ export async function addPet(formData) {
   revalidatePath('/app', 'layout'); // Revalidate the home page to reflect the new pet
 }
 
-export async function editPet(petId, formData) {
+export async function editPet(petId: any, newPetData: any) {
   try {
     await prisma.pet.update({
       where: { id: petId },
-      data: {
-        name: formData.get('name'),
-        ownerName: formData.get('ownerName'),
-        imageUrl:
-          formData.get('imageUrl') ||
-          'https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png',
-        age: formData.get('age'),
-        notes: formData.get('notes'),
-      },
+      data: newPetData,
+      // data: {
+      //   name: formData.get('name'),
+      //   ownerName: formData.get('ownerName'),
+      //   imageUrl:
+      //     formData.get('imageUrl') ||
+      //     'https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png',
+      //   age: formData.get('age'),
+      //   notes: formData.get('notes'),
+      // },
     });
   } catch (error) {
     return {
@@ -49,7 +51,7 @@ export async function editPet(petId, formData) {
   revalidatePath('/app', 'layout'); // Revalidate the home page to reflect the updated pet
 }
 
-export async function deletePet(petId) {
+export async function deletePet(petId: any) {
   try {
     await prisma.pet.delete({
       where: { id: petId },

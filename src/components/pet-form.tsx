@@ -45,7 +45,18 @@ export default function PetForm({
     <form
       className="flex flex-col"
       action={async (formData) => {
+        onFormSubmission();
+        const petData = {
+          name: formData.get('name') as string,
+          ownerName: formData.get('ownerName') as string,
+          imageUrl:
+            (formData.get('imageUrl') as string) ||
+            'https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png',
+          age: +(formData.get('age') as string),
+          notes: formData.get('notes') as string,
+        };
         if (actionType === 'add') {
+          await handleAddPet(petData);
           // const error = await addPet(formData);
           // if (error) {
           //   console.error('Error adding pet:', error);
@@ -54,18 +65,17 @@ export default function PetForm({
           //   );
           //   return;
           // }
-          handleAddPet(formData);
         } else if (actionType === 'edit') {
+          await handleEditPet(selectedPet!.id, petData);
           // const error = await editPet(selectedPet?.id, formData);
           // if (error) {
           //   toast.warning(error.message);
           //   return;
           // }
         }
+        console.log('Pet added successfully');
         // If the action is successful, we can call the onFormSubmission callback
         // This will trigger a re-render or any other side effects needed
-        console.log('Pet added successfully');
-        onFormSubmission();
       }}
     >
       <div className="space-y-3">
